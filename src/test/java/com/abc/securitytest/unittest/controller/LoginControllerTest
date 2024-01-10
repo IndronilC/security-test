@@ -1,8 +1,0 @@
-
-@WebMVCTest(controllers = LoginController.class)
-public class LoginControllerTest {
-@Autowired
-private MockMVC mockMvc
-
-
-}
