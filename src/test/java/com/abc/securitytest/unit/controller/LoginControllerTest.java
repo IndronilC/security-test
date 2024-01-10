@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -22,14 +23,31 @@ public class LoginControllerTest {
 
     @Test
     public void givenPostLogin_whenWithoutUserCredentials_thenReceivedForbidden() throws Exception {
-        ResultActions response = mockMvc.perform(post(API_V1_LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        response.andDo(print())
-                .andExpect(status().isForbidden());
-
-
+        createMockResponseAndAssert();
 
     }
+
+    private void createMockResponseAndAssert() throws Exception {
+        ResultActions response = mockMvc.perform(post(API_V1_LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON));
+        response.andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(value = "indronil")
+    @Test
+    public void givenPostLogin_whenWithInvalidUserCredentials_thenReceivedForbidden() throws Exception {
+        createMockResponseAndAssert();
+    }
+
+    @WithMockUser(value = "spring")
+    @Test
+    public void givenPostLogin_whenWithValiddUserCredentials_thenReceiveStatusOk() throws Exception{
+        ResultActions response = mockMvc.perform(post(API_V1_LOGIN)
+                .contentType(MediaType.APPLICATION_JSON));
+        response.andDo(print())
+                .andExpect(status().isOk());
+    }
+
 
 }
